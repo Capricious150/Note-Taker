@@ -3,6 +3,7 @@ const PORT = 3001;
 const app = express();
 const path = require('path');
 const noteDb = require('./db/db.json')
+const uuid = require('./utils/uuid.js')
 
 // Static Elements
 app.use(express.static("public"))
