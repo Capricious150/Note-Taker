@@ -2,8 +2,12 @@ const express = require('express');
 const PORT = 3001;
 const app = express();
 const path = require('path');
-const noteDb = require('./db/db.json')
-const uuid = require('./utils/uuid.js')
+const noteDb = require('./db/db.json');
+const utilities = require('./utils/utilities.js');
+const fs = require('fs');
+const uuid = utilities.uuid;
+const readJson = utilities.readJson;
+const writeJson = utilities.writeJson;
 
 // Static Elements
 app.use(express.static("public"))
@@ -23,16 +27,43 @@ app.get('/', (req, res) => {
 app.get('/api/notes', (req, res) => res.json(noteDb))
 
 // If GET method is used for /notes, return notes.html from public
-app.get("/notes", (req, res) => res.sendFile(path.resolve("/notes.html")))
+app.get("/notes", (req, res) => res.sendFile(path.resolve("public/notes.html")))
 
 // If GET method is used for *, return index.html from public
-app.get("*", (req, res) => res.sendFile(path.resolve("/index.html")))
+app.get("*", (req, res) => res.sendFile(path.resolve("public/index.html")))
 
 app.post('/api/notes', (req, res) => {
-    res.send("CODE FOR POST METHOD GOES HERE")
+    console.info(`${req.method} request received to add a note`);
+    console.info(req.body);
+    const {title, text} = req.body;
+    console.info(title);
+    console.info(text);
+
+    if (title, text) {
+    console.info('Both title and body exist!') 
+
+    const newNote = {
+      title,
+      text,
+      id: uuid()
+      }
+
+    console.info(newNote);
+    // const newNoteString = JSON.stringify(newNote);
+    // console.info(newNoteString);
+
+    readJson('./db/db.json', newNote)
+
+    const response = {
+      status: 'success',
+      body: newNote
+    }
+
+    console.info(response);
+    res.status(201).json(response)
+  } else {
+    res.status(500).json('Error in saving note: Missing title or body')
+  }
 })
 
-
-app.listen(PORT, () => 
-  console.log(`Server is listening on localhost port ${PORT}!`)
-)
+app.listen(PORT, () => console.log(`Server is listening on localhost port ${PORT}!`))
