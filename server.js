@@ -24,7 +24,16 @@ app.get('/', (req, res) => {
   });
 
 //  If GET method is used for /api/notes, return db.json (const noteFile)
-app.get('/api/notes', (req, res) => res.json(noteDb))
+app.get('/api/notes', (req, res) => {
+  // res.json(noteDb)
+  fs.readFile('./db/db.json', 'utf8', (err, data) => {
+  if (err){
+    console.info(err)
+  } else {
+    const parsely = JSON.parse(data);
+    res.json(parsely);
+  }})
+})
 
 // If GET method is used for /notes, return notes.html from public
 app.get("/notes", (req, res) => res.sendFile(path.resolve("public/notes.html")))
