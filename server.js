@@ -2,12 +2,10 @@ const express = require('express');
 const PORT = 3001;
 const app = express();
 const path = require('path');
-const noteDb = require('./db/db.json');
 const utilities = require('./utils/utilities.js');
 const fs = require('fs');
 const uuid = utilities.uuid;
 const readJson = utilities.readJson;
-const writeJson = utilities.writeJson;
 
 // Static Elements
 app.use(express.static("public"))
@@ -25,7 +23,6 @@ app.get('/', (req, res) => {
 
 //  If GET method is used for /api/notes, return db.json (const noteFile)
 app.get('/api/notes', (req, res) => {
-  // res.json(noteDb)
   fs.readFile('./db/db.json', 'utf8', (err, data) => {
   if (err){
     console.info(err)
@@ -45,8 +42,6 @@ app.post('/api/notes', (req, res) => {
     console.info(`${req.method} request received to add a note`);
     console.info(req.body);
     const {title, text} = req.body;
-    console.info(title);
-    console.info(text);
 
     if (title, text) {
     console.info('Both title and body exist!') 
@@ -58,8 +53,6 @@ app.post('/api/notes', (req, res) => {
       }
 
     console.info(newNote);
-    // const newNoteString = JSON.stringify(newNote);
-    // console.info(newNoteString);
 
     readJson('./db/db.json', newNote)
 
